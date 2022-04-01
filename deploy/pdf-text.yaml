@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-text
+  labels:
+    app: pdf-text
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: pdf-text
+  template:
+    metadata:
+      labels:
+        app: pdf-text
+    spec:
+      containers:
+      - name: pdf-text
+        image: pdf-text
+        ports:
+        - containerPort: 5672
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: MQ_HOST
+            value: "rabbitmq-cluster"
+          - name: MQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-cluster-default-user
+                key: username
+          - name: MQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-cluster-default-user
+                key: password
