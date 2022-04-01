@@ -8,7 +8,6 @@ from rpc_client import PDFRankingClient
 ARXIV_API_FORMAT = "http://export.arxiv.org/api/query?search_query={}&start={}&max_results={}&sortBy=relevance&sortOrder=descending"
 DEFAULT_PAGESIZE = 10
 
-
 app = Flask(__name__)
 
 

@@ -1,13 +1,20 @@
 import uuid
 import json
 
+import os
+
 import pika
 
 class PDFRankingClient():
 
     def __init__(self):
+        mq_host = os.environ['MQ_HOST']
+        mq_username = os.environ['MQ_USERNAME']
+        mq_password = os.environ['MQ_PASSWORD']
+
+        credentials = pika.PlainCredentials(mq_username, mq_password)
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost'))
+            pika.ConnectionParameters(host=mq_host, port=5672, credentials=credentials))
 
         self.channel = self.connection.channel()
 
