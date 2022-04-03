@@ -21,7 +21,7 @@ class Search extends React.Component {
     }
 
     async requestSearchResults(keywords) {
-        let url = "https://api.crossref.org/works?query=";
+        let url = "/api/search?keywords=";
         let encoded_query = encodeURIComponent(keywords.join(" "));
         let response = await fetch(url + encoded_query, { method: "GET" });
         let res_obj = await response.json();
@@ -40,7 +40,6 @@ class Search extends React.Component {
             searchResults: resp.message.items,
         })
 
-        // alert(JSON.stringify(results))
     }
 
     render() {
