@@ -8,15 +8,19 @@ import Stack from 'react-bootstrap/Stack';
 import Spinner from 'react-bootstrap/Spinner';
 
 import Result from "./result";
+import PaginationElement from "./pagination";
 
 class Search extends React.Component {
     constructor(props) {
         super(props);
         this.handleSearch = this.handleSearch.bind(this)
+        this.changePage = this.changePage.bind(this)
         this.state = {
             searchBarInput: "",
             displayLoading: false,
-            searchResults: []
+            searchResults: [],
+            currentPage: 0,
+            lastPage: 100
         }
     }
 
@@ -42,6 +46,12 @@ class Search extends React.Component {
 
     }
 
+    changePage(targetPage) {
+        this.setState({
+            currentPage: targetPage
+        })
+    }
+
     render() {
         const titles = this.state.searchResults.map((item) => item.title[0])
         return (
@@ -62,8 +72,11 @@ class Search extends React.Component {
                             </Spinner>
                         }
                     </div>
-                    {titles.map((title) => <Result title={title} />)}
+                    {
+                        titles.map((title) => <Result title={title} />)
+                    }
                 </Stack>
+                <PaginationElement currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage}/>
             </Container>
         );
     }

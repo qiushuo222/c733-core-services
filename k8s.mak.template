@@ -1,0 +1,49 @@
+ARCH=--platform x86_64
+REG=docker.io
+REGID=TO_BE_FILLED_IN
+
+.PHONY: model-services 
+model-services:
+	docker build $(ARCH) -t $(REG)/$(REGID)/model-services model-services
+	docker push $(REG)/$(REGID)/model-services
+
+.PHONY: pdf-text
+pdf-text:
+	docker build $(ARCH) -t $(REG)/$(REGID)/pdf-text pdf-text
+	docker push $(REG)/$(REGID)/pdf-text
+
+.PHONY: search-apis
+search-apis:
+	docker build $(ARCH) -t $(REG)/$(REGID)/search-apis search-apis
+	docker push $(REG)/$(REGID)/search-apis
+
+.PHONY: search-frontend
+search-frontend:
+	docker build $(ARCH) -t $(REG)/$(REGID)/search-frontend search-frontend
+	docker push $(REG)/$(REGID)/search-frontend
+
+.PHONY: k8s-components
+k8s-components:
+	kubectl apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.2/deploy/static/provider/cloud/deploy.yaml
+
+build: model-services pdf-text search-apis search-frontend
+	echo "Build Complete"
+
+apply: k8s-components
+	kubectl apply -f deploy/cloud/ingress.yaml
+	kubectl apply -f deploy/cloud/rabbitmq.yaml
+	kubectl apply -f deploy/cloud/model-services.yaml
+	kubectl apply -f deploy/cloud/pdf-text.yaml
+	kubectl apply -f deploy/cloud/search-apis.yaml
+	kubectl apply -f deploy/cloud/search-frontend.yaml
+
+deploy: k8s-components model-services pdf-text search-apis search-frontend
+	kubectl apply -f deploy/cloud/rabbitmq.yaml
+	kubectl apply -f deploy/cloud/model-services.yaml
+	kubectl apply -f deploy/cloud/pdf-text.yaml
+	kubectl apply -f deploy/cloud/search-apis.yaml
+	kubectl apply -f deploy/cloud/search-frontend.yaml
+
+scratch:
+	kubectl delete deploy --all
