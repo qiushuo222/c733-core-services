@@ -1,0 +1,3 @@
+cloud/*.yaml
+!cloud/ingress.yaml
+!cloud/rabbitmq.yaml

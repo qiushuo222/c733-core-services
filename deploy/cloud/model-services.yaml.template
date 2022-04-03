@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-services
+  labels:
+    app: model
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: model-services
+  template:
+    metadata:
+      labels:
+        app: model-services
+    spec:
+      containers:
+      - name: model-services
+        image: DOCKER_IMAGE_IN_YOUR_REPOSITORY
+        ports:
+        - containerPort: 5672
+        env:
+          - name: MQ_HOST
+            value: "rabbitmq-cluster"
+          - name: MQ_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-cluster-default-user
+                key: username
+          - name: MQ_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rabbitmq-cluster-default-user
+                key: password

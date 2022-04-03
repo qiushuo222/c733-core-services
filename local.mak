@@ -29,22 +29,22 @@ search-frontend:
 .PHONY: k8s-components
 k8s-components:
 	$(KC) apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
-	# $(KC) apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.2/deploy/static/provider/cloud/deploy.yaml
+	minikube addons enable ingress
 
 deploy: k8s-components model-services pdf-text search-apis search-frontend
-	$(KC) apply -f deploy/rabbitmq.yaml
-	$(KC) apply -f deploy/model-services.yaml
-	$(KC) apply -f deploy/pdf-text.yaml
-	$(KC) apply -f deploy/search-apis.yaml
-	$(KC) apply -f deploy/search-frontend.yaml
+	$(KC) apply -f deploy/local/rabbitmq.yaml
+	$(KC) apply -f deploy/local/model-services.yaml
+	$(KC) apply -f deploy/local/pdf-text.yaml
+	$(KC) apply -f deploy/local/search-apis.yaml
+	$(KC) apply -f deploy/local/search-frontend.yaml
 
 apply: k8s-components
-	$(KC) apply -f deploy/ingress.yaml
-	$(KC) apply -f deploy/rabbitmq.yaml
-	$(KC) apply -f deploy/model-services.yaml
-	$(KC) apply -f deploy/pdf-text.yaml
-	$(KC) apply -f deploy/search-apis.yaml
-	$(KC) apply -f deploy/search-frontend.yaml
+	$(KC) apply -f deploy/local/ingress.yaml
+	$(KC) apply -f deploy/local/rabbitmq.yaml
+	$(KC) apply -f deploy/local/model-services.yaml
+	$(KC) apply -f deploy/local/pdf-text.yaml
+	$(KC) apply -f deploy/local/search-apis.yaml
+	$(KC) apply -f deploy/local/search-frontend.yaml
 
 scratch:
 	$(KC) delete deploy --all
