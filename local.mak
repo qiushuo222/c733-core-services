@@ -32,6 +32,7 @@ k8s-components:
 	minikube addons enable ingress
 
 deploy: k8s-components model-services pdf-text search-apis search-frontend
+	$(KC) apply -f deploy/local/ingress.yaml
 	$(KC) apply -f deploy/local/rabbitmq.yaml
 	$(KC) apply -f deploy/local/model-services.yaml
 	$(KC) apply -f deploy/local/pdf-text.yaml

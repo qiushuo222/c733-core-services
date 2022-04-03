@@ -39,6 +39,7 @@ apply: k8s-components
 	kubectl apply -f deploy/cloud/search-frontend.yaml
 
 deploy: k8s-components model-services pdf-text search-apis search-frontend
+	kubectl apply -f deploy/cloud/ingress.yaml
 	kubectl apply -f deploy/cloud/rabbitmq.yaml
 	kubectl apply -f deploy/cloud/model-services.yaml
 	kubectl apply -f deploy/cloud/pdf-text.yaml
