@@ -52,7 +52,8 @@ class Search extends React.Component {
             totalResults: resp.totalResults,
 
             currentPage: Math.floor(resp.startIndex / resp.itemsPerPage) + 1,
-            lastPage: Math.floor(resp.totalResults / resp.itemsPerPage)
+            lastPage: Math.floor(resp.totalResults / resp.itemsPerPage),
+            resultPerPage: resp.itemsPerPage
         })
 
     }
@@ -60,8 +61,10 @@ class Search extends React.Component {
     changePage(targetPage) {
         this.setState({
             currentPage: targetPage
+        }, () => {
+            console.log(this.state.currentPage)
+            this.handleSearch()
         })
-        this.handleSearch()
     }
 
     render() {
