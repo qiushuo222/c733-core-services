@@ -18,16 +18,21 @@ class Search extends React.Component {
         this.state = {
             searchBarInput: "",
             displayLoading: false,
+
+            resultPerPage: 0,
+            totalResults: 0,
+
+            currentPage: 1,
+            lastPage: 0,
+
             searchResults: [],
-            currentPage: 0,
-            lastPage: 100
         }
     }
 
-    async requestSearchResults(keywords) {
+    async requestSearchResults(keywords, startIndex) {
         let url = "/api/search?keywords=";
-        let encoded_query = encodeURIComponent(keywords.join(" "));
-        let response = await fetch(url + encoded_query, { method: "GET" });
+        let encoded_query = encodeURIComponent(`"${keywords.join(" ")}"`);
+        let response = await fetch(`${url}${encoded_query}?start=${startIndex}`, { method: "GET" });
         let res_obj = await response.json();
         return res_obj
     }
@@ -37,11 +42,17 @@ class Search extends React.Component {
             displayLoading: true,
             searchResults: []
         })
+        
+        let startIndex = (this.state.currentPage - 1) * this.state.resultPerPage
+        let resp = await this.requestSearchResults(this.state.searchBarInput.split(" "), startIndex.toString());
 
-        let resp = await this.requestSearchResults(this.state.searchBarInput.split(" "));
         this.setState({
             displayLoading: false,
-            searchResults: resp.message.items,
+            searchResults: resp.results,
+            totalResults: resp.totalResults,
+
+            currentPage: Math.floor(resp.startIndex / resp.itemsPerPage) + 1,
+            lastPage: Math.floor(resp.totalResults / resp.itemsPerPage)
         })
 
     }
@@ -50,10 +61,11 @@ class Search extends React.Component {
         this.setState({
             currentPage: targetPage
         })
+        this.handleSearch()
     }
 
     render() {
-        const titles = this.state.searchResults.map((item) => item.title[0])
+        this.state.searchResults.sort((a, b) => { return b.score - a.score })
         return (
             <Container>
                 <Stack gap={3}>
@@ -73,10 +85,12 @@ class Search extends React.Component {
                         }
                     </div>
                     {
-                        titles.map((title) => <Result title={title} />)
+                        this.state.searchResults.map((item) => <Result key={item.paper_page} title={item.title} authors={item.authors} score={item.score} abstract={item.abstract} paperLink={item.paper_page} pdfLink={item.pdf_link} />)
                     }
                 </Stack>
-                <PaginationElement currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage}/>
+                {   this.state.searchResults.length !== 0 &&
+                    <PaginationElement currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage} />
+                }
             </Container>
         );
     }

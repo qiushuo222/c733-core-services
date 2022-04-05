@@ -10,10 +10,13 @@ function Result(props) {
     return (
         <Card>
             <Card.Body>
-                <Card.Title>{props.title}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">Authors</Card.Subtitle>
+                <Card.Title>
+                    <a href={props.paperLink} target="_blank" rel="noreferrer">{props.title}</a>
+                    <a href={props.pdfLink} target="_blank" rel="noreferrer">[PDF]</a>
+                </Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">{props.authors.join(", ")}</Card.Subtitle>
                 <Card.Text>
-                    Paper Abstract
+                    {props.abstract}
                 </Card.Text>
                 <Button
                     onClick={() => setOpen(!open)}
@@ -22,7 +25,6 @@ function Result(props) {
                 >
                     Referenced by
                 </Button>
-                <Button variant="primary">References</Button>
                 <Collapse in={open}>
                     <div id="example-collapse-text">
                         <Container>

@@ -47,3 +47,5 @@ spec:
               secretKeyRef:
                 name: rabbitmq-cluster-default-user
                 key: password
+          - name: REDIS_HOST
+            value: "redis"
