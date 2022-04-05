@@ -89,7 +89,7 @@ class Search extends React.Component {
                     }
                 </Stack>
                 {   this.state.searchResults.length !== 0 &&
-                    <PaginationElement currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage} />
+                    <PaginationElement totalLen={5} currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage} />
                 }
             </Container>
         );
