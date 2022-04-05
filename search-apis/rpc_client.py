@@ -30,15 +30,15 @@ class PDFRankingClient():
         result_queue = self.channel.queue_declare(queue='', exclusive=True)
         self.callback_queue = result_queue.method.queue
 
-        self.channel.basic_consume(
-            queue=self.callback_queue,
-            on_message_callback=self.on_response,
-            auto_ack=True)
+        # self.channel.basic_consume(
+        #     queue=self.callback_queue,
+        #     on_message_callback=self.on_response,
+        #     auto_ack=True)
         
         self.response = {}
 
-    def on_response(self, ch, method, props, body):
-        if self.corr_id != props.correlation_id:
+    def handle_response(self, corr_id, body):
+        if self.corr_id != corr_id:
             return
         pdf_uri, score = json.loads(body.decode("utf-8"))
         self.response[pdf_uri] = score
@@ -59,9 +59,12 @@ class PDFRankingClient():
                         correlation_id=self.corr_id),
                     body=uri
                 )
-        
-        while len(self.response) < len(pdf_uris):
+    
+        for message in self.connection.consume(queue=self.callback_queue, auto_ack=True):
+            method, props, body = message
+            self.handle_response(props.correlation_id, body)
             logging.info(f"{len(self.response)} responses received")
-            self.connection.process_data_events()
+            if len(self.response) >= len(pdf_uris):
+                break
         
         return self.response

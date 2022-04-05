@@ -1,6 +1,6 @@
 REGION=us-west-2
 CONTEXT_NAME=search-context
-NODE_TYPE=c6g.2xlarge
+NODE_TYPE=t3.2xlarge
 NUM_NODES=5
 
 start: 
