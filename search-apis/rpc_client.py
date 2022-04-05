@@ -60,7 +60,7 @@ class PDFRankingClient():
                     body=uri
                 )
     
-        for message in self.connection.consume(queue=self.callback_queue, auto_ack=True):
+        for message in self.channel.consume(queue=self.callback_queue, auto_ack=True):
             method, props, body = message
             self.handle_response(props.correlation_id, body)
             logging.info(f"{len(self.response)} responses received")
