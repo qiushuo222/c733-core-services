@@ -32,7 +32,7 @@ class Search extends React.Component {
     async requestSearchResults(keywords, startIndex) {
         let url = "/api/search?keywords=";
         let encoded_query = encodeURIComponent(`"${keywords.join(" ")}"`);
-        let response = await fetch(`${url}${encoded_query}?start=${startIndex}`, { method: "GET" });
+        let response = await fetch(`${url}${encoded_query}&start=${startIndex}`, { method: "GET" });
         let res_obj = await response.json();
         return res_obj
     }
@@ -62,7 +62,6 @@ class Search extends React.Component {
         this.setState({
             currentPage: targetPage
         }, () => {
-            console.log(this.state.currentPage)
             this.handleSearch()
         })
     }
