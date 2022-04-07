@@ -1,7 +1,5 @@
-import numpy as np
 import torch
 import torch.nn as nn
-import pickle
 
 class AutoEncoderNew(nn.Module):
     def __init__(self):
@@ -16,18 +14,19 @@ class AutoEncoderNew(nn.Module):
             nn.ReLU(),
             nn.Linear(2, 1), 
         )
+
     def forward(self, x):
         x = self.encoder(x)
         return x
 
-def load_model(model, path):
-    # load
-    with open(path, 'rb') as f:
-        model = pickle.load(f)
-        return model
 
-def model_mock(features):
-    model = AutoEncoderNew()
-    model = load_model(model, 'val_best.pkl')
-    pred = model(torch.Tensor(features).float())
-    return pred
+class Predictor():
+    def __init__(self, model_weights_path):
+        self.model = AutoEncoderNew()
+        with open(model_weights_path, "rb") as f:
+            weights = torch.load(f, map_location=torch.device('cpu'))
+        self.model.load_state_dict(weights)
+        self.model.eval()
+
+    def predict(self, features):
+        return self.model(torch.Tensor(features).float()).item()

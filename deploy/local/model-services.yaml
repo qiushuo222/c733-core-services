@@ -5,7 +5,7 @@ metadata:
   labels:
     app: model
 spec:
-  replicas: 3
+  replicas: 5
   selector:
     matchLabels:
       app: model-services
@@ -33,3 +33,7 @@ spec:
               secretKeyRef:
                 name: rabbitmq-cluster-default-user
                 key: password
+          - name: FEATURE_STDS
+            value: "[374.02855481460574, 11.102259862692481, 0.004641547155806401, 0.7245245578813498, 3.955913174878866]"
+          - name: FEATURE_MEANS
+            value: "[920.756442, 14.4969765, 0.00803971418, 3.23909807, 3.3909654]"

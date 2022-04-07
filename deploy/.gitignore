@@ -1,3 +1,5 @@
 cloud/*.yaml
 !cloud/ingress.yaml
 !cloud/rabbitmq.yaml
+!cloud/redis.yaml
+!cloud/redis-config.yaml

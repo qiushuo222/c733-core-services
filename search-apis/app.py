@@ -43,6 +43,7 @@ def serve_search():
     for entry in entries:
         result = {
             "paper_page": entry.find("id").get_text(),
+            "abstract": entry.find("summary").get_text(),
             "title": entry.find("title").get_text(),
             "authors": [author.find("name").get_text() for author in entry.find_all("author")],
             "pdf_link": entry.find("link", title="pdf").get("href")

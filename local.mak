@@ -31,14 +31,20 @@ k8s-components:
 	$(KC) apply -f "https://github.com/rabbitmq/cluster-operator/releases/latest/download/cluster-operator.yml"
 	minikube addons enable ingress
 
-deploy: k8s-components model-services pdf-text search-apis search-frontend
+.PHONY: redis
+redis:
+	$(KC) apply -f deploy/local/redis-config.yaml
+	$(KC) apply -f deploy/local/redis.yaml
+
+deploy: redis k8s-components model-services pdf-text search-apis search-frontend
+	$(KC) apply -f deploy/local/ingress.yaml
 	$(KC) apply -f deploy/local/rabbitmq.yaml
 	$(KC) apply -f deploy/local/model-services.yaml
 	$(KC) apply -f deploy/local/pdf-text.yaml
 	$(KC) apply -f deploy/local/search-apis.yaml
 	$(KC) apply -f deploy/local/search-frontend.yaml
 
-apply: k8s-components
+apply: redis k8s-components
 	$(KC) apply -f deploy/local/ingress.yaml
 	$(KC) apply -f deploy/local/rabbitmq.yaml
 	$(KC) apply -f deploy/local/model-services.yaml
