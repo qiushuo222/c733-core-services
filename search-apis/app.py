@@ -2,11 +2,13 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask
 from flask import request, abort
+import logging
 
 from rpc_client import PDFRankingClient
 
 ARXIV_API_FORMAT = "http://export.arxiv.org/api/query?search_query={}&start={}&max_results={}&sortBy=relevance&sortOrder=descending"
 DEFAULT_PAGESIZE = 10
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 
@@ -27,7 +29,8 @@ def serve_search():
     start, max_results = int(start), int(max_results)
 
     query_string = " ".join(keywords)
-    uri = ARXIV_API_FORMAT.format("all:"+fr'"{query_string}"', start, max_results)
+    uri = ARXIV_API_FORMAT.format("all:"+f'{query_string}', start, max_results)
+    logging.info(f"Endpoint uri is {uri}")
     resp = requests.get(uri)
     if resp.status_code != requests.codes.ok:
         abort(500)
