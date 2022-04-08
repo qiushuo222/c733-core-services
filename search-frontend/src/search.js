@@ -38,11 +38,15 @@ class Search extends React.Component {
     }
 
     async handleSearch() {
+        if (this.state.searchBarInput === "") {
+            return
+        }
+
         this.setState({
             displayLoading: true,
             searchResults: []
         })
-        
+
         let startIndex = (this.state.currentPage - 1) * this.state.resultPerPage
         let resp = await this.requestSearchResults(this.state.searchBarInput.split(" "), startIndex.toString());
 
@@ -73,24 +77,35 @@ class Search extends React.Component {
                 <Stack gap={3}>
                     <div className="container gy-3">
                         <InputGroup className="mb-3">
-                            <FormControl aria-describedby="basic-addon2" onChange={e => this.setState({ searchBarInput: e.target.value })} />
-                            <Button variant="primary" id="button-addon2" onClick={this.handleSearch}>
+                            <FormControl aria-describedby="basic-addon2"
+                                onChange={e => this.setState({ searchBarInput: e.target.value })}
+                                onKeyPress={event => {
+                                    if (event.key === "Enter") {
+                                        this.handleSearch()
+                                    }
+                                }} />
+                            <Button variant="primary" id="button-addon2" onClick={this.handleSearch} >
                                 Search
                             </Button>
-                        </InputGroup>
 
+                        </InputGroup>
                         {
                             this.state.displayLoading &&
-                            <Spinner animation="border" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </Spinner>
+                            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                <Spinner animation="border" role="status" />
+                            </div>
                         }
                     </div>
+
                     {
-                        this.state.searchResults.map((item) => <Result key={item.paper_page} title={item.title} authors={item.authors} score={item.score} abstract={item.abstract} paperLink={item.paper_page} pdfLink={item.pdf_link} />)
+                        this.state.searchResults.map((item) => <Result key={item.paper_page}
+                            title={item.title} authors={item.authors}
+                            score={item.score} abstract={item.abstract}
+                            paperLink={item.paper_page} pdfLink={item.pdf_link} />
+                        )
                     }
                 </Stack>
-                {   this.state.searchResults.length !== 0 &&
+                {this.state.searchResults.length !== 0 &&
                     <PaginationElement totalLen={5} currentPage={this.state.currentPage} lastPage={this.state.lastPage} changePage={this.changePage} />
                 }
             </Container>

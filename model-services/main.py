@@ -22,8 +22,8 @@ def on_request(ch, method, props, body, model):
     
     except Exception as e:
         logging.exception(e)
-        score = 0
-    
+        score = -100
+
     finally:
         response = (pdf_uri, score)
         ch.basic_publish(exchange='',
