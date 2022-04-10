@@ -8,6 +8,9 @@
 -  `search-apis/` - Backend API server for the search functionalities.
 -  `search-frontend/` - Frontend React server that serves the webpages for the search engine.
 
+## Acknowledgement
+The core functionality of the PDF plaintext conversion component is built on top of [PDFBoT](https://github.com/yuchangfeng/PDFBoT), which in turn is derived from the paper written by [Yu, Changfeng, Cheng Zhang and Jie Wang. “Extracting Body Text from Academic PDF Documents for Text Mining.” KDIR (2020).](https://doi.org/10.48550/arXiv.2010.12647)
+
 ## To run the services locally
 1. Make sure to have Docker and Minikube installed
 2. From root directory, run `make -f local.mak deploy`
