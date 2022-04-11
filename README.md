@@ -1,4 +1,4 @@
-# search-services
+# A NLP Augmented Scientific Paper Searching System
 
 ## Repository Structure
 - `deploy/` - Contains yaml files that describe deployment configuration
